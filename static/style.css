@@ -1,0 +1,3371 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #f3f4f8;
+
+    font-family: Arial, sans-serif;
+}
+
+
+.game-card {
+    width: 520px;
+    max-width: 92%;
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+
+    text-align: center;
+}
+
+
+h1 {
+    margin: 0;
+
+    font-size: 36px;
+}
+
+
+h2 {
+    margin-top: 5px;
+
+    font-weight: normal;
+
+    color: #666;
+}
+
+
+.target-section {
+    margin: 30px 0 15px;
+}
+
+
+.target-section span {
+    color: #777;
+
+    font-size: 16px;
+}
+
+
+.target-number {
+    font-size: 48px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+
+.instruction {
+    color: #666;
+
+    margin-bottom: 20px;
+}
+
+
+.numbers-container,
+.operators-container {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin: 20px 0;
+}
+
+
+.tile {
+    width: 58px;
+    height: 58px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.tile:hover {
+    transform: translateY(-2px);
+}
+
+
+.number-tile {
+    background: #272b38;
+
+    color: white;
+}
+
+
+.number-tile:disabled {
+    opacity: 0.25;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+.operator-tile {
+    background: #e8eaf0;
+
+    color: #222;
+}
+
+
+.equation-section {
+    margin-top: 30px;
+}
+
+
+.equation-section h3 {
+    margin-bottom: 10px;
+}
+
+
+.equation-box {
+    min-height: 85px;
+
+    padding: 15px;
+
+    border: 2px dashed #ccc;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 8px;
+
+    flex-wrap: nowrap;
+
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+    transition: 0.2s;
+}
+
+
+.equation-box.drag-over {
+    border-color: #555;
+
+    background: #f5f5f5;
+}
+
+
+.placeholder {
+    color: #aaa;
+
+    font-size: 15px;
+}
+
+
+.equation-tile {
+    min-width: 42px;
+
+    height: 42px;
+
+    padding: 0 10px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background: #eeeeee;
+
+    border-radius: 9px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.edit-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin: 20px 0;
+}
+
+
+.secondary-button,
+.new-puzzle-button {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 10px 18px;
+
+    cursor: pointer;
+
+    background: #e5e5e5;
+
+    font-size: 14px;
+}
+
+
+.submit-button {
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #272b38;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.submit-button:hover {
+    opacity: 0.9;
+}
+
+
+.feedback {
+    min-height: 30px;
+
+    margin: 18px 0 8px;
+
+    font-weight: bold;
+
+    font-size: 17px;
+}
+
+
+.feedback.success {
+    color: #16823b;
+}
+
+
+.feedback.error {
+    color: #c73636;
+}
+
+.feedback.ended {
+    color: #9a6b26;
+}
+
+
+.new-puzzle-button {
+    margin-top: 5px;
+}
+
+.equation-box .placeholder {
+    margin: auto;
+    flex-shrink: 0;
+}
+
+
+.equation-tile {
+    flex: 0 0 auto;
+
+    cursor: grab;
+
+    user-select: none;
+}
+
+
+.equation-tile:active {
+    cursor: grabbing;
+}
+
+
+.equation-tile.dragging {
+    opacity: 0.3;
+}
+
+
+.drop-indicator {
+    width: 4px;
+    height: 42px;
+
+    flex: 0 0 4px;
+
+    background: #272b38;
+
+    border-radius: 3px;
+}
+
+
+.equation-box.drag-over {
+    border-color: #555;
+    background: #f7f7f7;
+}
+
+
+.equation-box.drag-over .placeholder {
+    display: none;
+}
+
+/* Equation turns red when an existing tile
+   will be deleted if released */
+
+.equation-box.delete-mode {
+    border-color: #d9534f;
+    background: #fff0f0;
+}
+
+
+/* Smooth shrinking when equation gets longer */
+
+.equation-tile {
+    transition:
+        width 0.15s ease,
+        height 0.15s ease,
+        font-size 0.15s ease,
+        opacity 0.15s ease;
+
+    flex-shrink: 0;
+}
+
+/* Available operator buttons */
+
+.operator-tile {
+    background: transparent;
+    border: none;
+
+    width: 48px;
+    height: 48px;
+
+    font-size: 25px;
+    font-weight: bold;
+
+    border-radius: 8px;
+}
+
+
+.operator-tile:hover {
+    background: #f0f0f0;
+}
+
+
+/* Numbers inside the equation */
+
+.equation-number {
+    background: #eeeeee;
+    border-radius: 9px;
+}
+
+
+/* Operators inside the equation */
+
+.equation-operator {
+    background: transparent;
+    border-radius: 0;
+
+    min-width: 24px;
+    width: auto;
+
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/* --------------------------------------------------
+   Game statistics
+-------------------------------------------------- */
+
+.stats {
+    display: flex;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin: 18px 0 5px;
+}
+
+
+.stat {
+    min-width: 105px;
+
+    padding: 9px 14px;
+
+    background: #f2f3f6;
+
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.stat-label {
+    font-size: 13px;
+    color: #777;
+}
+
+
+.stat-value {
+    font-size: 21px;
+    font-weight: bold;
+
+    color: #272b38;
+}
+
+
+/* --------------------------------------------------
+   Solved puzzle
+-------------------------------------------------- */
+
+.game-card {
+    border: 2px solid transparent;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.game-card.solved {
+    border-color: #32a05f;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.1),
+        0 0 0 4px rgba(50, 160, 95, 0.08);
+}
+
+
+.equation-box.locked {
+    cursor: default;
+}
+
+
+/* Solved */
+
+.game-card.solved .equation-box.locked {
+    border-color: #32a05f;
+
+    background: #f3fff7;
+}
+
+
+/* Lost after using all attempts */
+
+.game-card.lost {
+    border-color: #c94a4a;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.1),
+        0 0 0 4px rgba(201, 74, 74, 0.07);
+}
+
+
+.game-card.lost .equation-box.locked {
+    border-color: #c94a4a;
+
+    background: #fff5f5;
+}
+
+
+/* Gave up */
+
+.game-card.given-up {
+    border-color: #c28a37;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.1),
+        0 0 0 4px rgba(194, 138, 55, 0.07);
+}
+
+
+.game-card.given-up .equation-box.locked {
+    border-color: #c28a37;
+
+    background: #fffaf1;
+}
+
+
+
+
+/* --------------------------------------------------
+   Solved button
+-------------------------------------------------- */
+
+.submit-button:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+
+.game-card.solved .submit-button {
+    background: #218c50;
+}
+
+.game-card.lost .submit-button {
+    background: #b84545;
+}
+
+
+.game-card.given-up .submit-button {
+    background: #a67836;
+}
+
+/* --------------------------------------------------
+   Disabled editing controls
+-------------------------------------------------- */
+
+.secondary-button:disabled,
+.operator-tile:disabled {
+    opacity: 0.35;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+/* --------------------------------------------------
+   Next Puzzle
+-------------------------------------------------- */
+
+.new-puzzle-button.next-puzzle {
+    background: #272b38;
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    padding: 12px 24px;
+}
+
+
+/* --------------------------------------------------
+   Strong solved message
+-------------------------------------------------- */
+
+.feedback.success {
+    color: #16823b;
+
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.feedback.ended {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* --------------------------------------------------
+   Statistics button
+-------------------------------------------------- */
+
+.stats-button {
+    margin-top: 10px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #666;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+.stats-button:hover {
+    color: #222;
+}
+
+
+/* --------------------------------------------------
+   Statistics modal
+-------------------------------------------------- */
+
+.modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.38);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+
+.modal.open {
+    display: flex;
+}
+
+
+.stats-modal-content {
+    width: 470px;
+    max-width: 90%;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    position: relative;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+
+.close-stats-button {
+    position: absolute;
+
+    top: 12px;
+    right: 16px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    color: #666;
+}
+
+
+.stats-title {
+    margin-top: 0;
+
+    text-align: center;
+
+    color: #222;
+
+    font-weight: bold;
+}
+
+
+/* --------------------------------------------------
+   Summary
+-------------------------------------------------- */
+
+.summary-stats {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin: 28px 0;
+}
+
+
+.summary-stat {
+    flex: 1;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.summary-value {
+    font-size: 28px;
+    font-weight: bold;
+
+    color: #272b38;
+}
+
+
+.summary-label {
+    font-size: 12px;
+
+    color: #777;
+
+    margin-top: 4px;
+}
+
+
+/* --------------------------------------------------
+   Distribution
+-------------------------------------------------- */
+
+.distribution-title {
+    margin-bottom: 15px;
+}
+
+
+.distribution {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.distribution-row {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.attempt-number {
+    width: 16px;
+
+    font-weight: bold;
+}
+
+
+.distribution-track {
+    flex: 1;
+
+    height: 28px;
+
+    display: flex;
+}
+
+
+.distribution-bar {
+    min-width: 30px;
+
+    height: 28px;
+
+    padding: 0 8px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    background: #777;
+
+    color: white;
+
+    font-weight: bold;
+
+    font-size: 13px;
+
+    border-radius: 4px;
+
+    transition: width 0.3s ease;
+}
+
+/* --------------------------------------------------
+   Bottom game actions
+-------------------------------------------------- */
+
+.bottom-actions {
+    display: flex;
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 5px;
+}
+
+
+.give-up-button {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 10px 18px;
+
+    cursor: pointer;
+
+    background: transparent;
+
+    color: #a33;
+
+    font-size: 14px;
+}
+
+
+.give-up-button:hover {
+    background: #fff0f0;
+}
+
+
+.give-up-button:disabled {
+    opacity: 0.35;
+
+    cursor: default;
+
+    background: transparent;
+}
+
+
+/* --------------------------------------------------
+   Revealed solution
+-------------------------------------------------- */
+
+.solution-reveal {
+    min-height: 24px;
+
+    margin: 8px 0 12px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #555;
+}
+
+
+.solution-reveal.visible {
+    padding: 10px 14px;
+
+    background: #f2f3f6;
+
+    border-radius: 10px;
+}
+
+/* --------------------------------------------------
+   Hint system
+-------------------------------------------------- */
+
+.hint-button {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 10px 18px;
+
+    cursor: pointer;
+
+    background: #eceef5;
+
+    color: #343a50;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: 0.15s;
+}
+
+
+.hint-button:hover:not(:disabled) {
+    background: #dfe2ec;
+
+    transform: translateY(-2px);
+}
+
+
+.hint-button:disabled {
+    opacity: 0.45;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+.hint-reveal {
+    min-height: 0;
+
+    margin: 8px 0 12px;
+
+    color: #4a5064;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    line-height: 1.45;
+}
+
+
+.hint-reveal.visible {
+    padding: 10px 14px;
+
+    background: #f5f6fa;
+
+    border: 1px solid #e0e3ec;
+    border-radius: 10px;
+}
+
+
+
+/* --------------------------------------------------
+   Give Up Modal
+-------------------------------------------------- */
+
+.give-up-modal-content {
+    width: 420px;
+    max-width: 90%;
+
+    background: white;
+
+    padding: 32px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.22);
+}
+
+
+.give-up-icon {
+    font-size: 42px;
+
+    margin-bottom: 8px;
+}
+
+
+.give-up-modal-content h2 {
+    margin: 8px 0 12px;
+
+    color: #272b38;
+
+    font-weight: bold;
+}
+
+
+.give-up-modal-content p {
+    margin: 0 auto 25px;
+
+    max-width: 320px;
+
+    color: #666;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+}
+
+
+.give-up-modal-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+}
+
+
+.keep-trying-button,
+.confirm-give-up-button {
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px 18px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.keep-trying-button {
+    background: #e9eaee;
+
+    color: #272b38;
+}
+
+
+.confirm-give-up-button {
+    background: #c94a4a;
+
+    color: white;
+}
+
+
+.keep-trying-button:hover,
+.confirm-give-up-button:hover {
+    transform: translateY(-2px);
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+/* --------------------------------------------------
+   Difficulty selector
+-------------------------------------------------- */
+
+.difficulty-section {
+    margin: 18px 0 22px;
+}
+
+
+.difficulty-label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+.difficulty-options {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+}
+
+
+.difficulty-button {
+    border: 1px solid #d9dbe3;
+
+    border-radius: 9px;
+
+    padding: 8px 14px;
+
+    background: #f2f3f6;
+
+    color: #555;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.difficulty-button:hover:not(.active) {
+    background: #e6e8ee;
+
+    transform: translateY(-1px);
+}
+
+
+.difficulty-button.active {
+    background: #272b38;
+
+    border-color: #272b38;
+
+    color: white;
+}
+
+/* --------------------------------------------------
+   Compact game layout
+-------------------------------------------------- */
+
+body {
+    align-items: flex-start;
+
+    padding: 26px 0;
+}
+
+
+.game-card {
+    padding: 28px 32px 30px;
+}
+
+
+/* --------------------------------------------------
+   Game header
+-------------------------------------------------- */
+
+.game-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 18px;
+
+    text-align: left;
+}
+
+
+.game-heading h1 {
+    margin: 0;
+
+    font-size: 32px;
+}
+
+
+.game-subtitle-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 3px;
+}
+
+
+.game-subtitle-row h2 {
+    margin: 0;
+
+    color: #666;
+
+    font-size: 19px;
+    font-weight: normal;
+}
+
+
+.header-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.header-icon-button {
+    width: 38px;
+    height: 38px;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #555;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.header-icon-button:hover {
+    background: #f0f1f4;
+
+    color: #222;
+
+    transform: translateY(-1px);
+}
+
+
+.header-icon-button:disabled {
+    opacity: 0.35;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+.header-icon-button svg {
+    width: 22px;
+    height: 22px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.help-icon {
+    width: 21px;
+    height: 21px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid currentColor;
+    border-radius: 50%;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* --------------------------------------------------
+   Current difficulty badge
+-------------------------------------------------- */
+
+.difficulty-badge {
+    border: none;
+
+    border-radius: 999px;
+
+    padding: 4px 9px;
+
+    background: #eef0f5;
+
+    color: #555d72;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.difficulty-badge:hover {
+    background: #e1e4ec;
+
+    color: #272b38;
+}
+
+
+.difficulty-badge:disabled {
+    opacity: 0.45;
+
+    cursor: default;
+}
+
+
+/* --------------------------------------------------
+   Compact live stats
+-------------------------------------------------- */
+
+.live-stats {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin: 18px 0 4px;
+}
+
+
+.live-stat {
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 8px 12px;
+
+    border-radius: 10px;
+
+    background: #f4f5f8;
+}
+
+
+.live-stat-label {
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+.live-stat strong {
+    color: #272b38;
+
+    font-size: 16px;
+}
+
+
+/* --------------------------------------------------
+   Tighter main game spacing
+-------------------------------------------------- */
+
+.target-section {
+    margin: 22px 0 8px;
+}
+
+
+.instruction {
+    margin: 12px 0 14px;
+}
+
+
+.numbers-container {
+    margin: 16px 0;
+}
+
+
+.equation-section {
+    margin-top: 22px;
+}
+
+
+.operators-container {
+    margin: 16px 0;
+}
+
+
+.edit-buttons {
+    margin: 14px 0;
+}
+
+
+/* --------------------------------------------------
+   Shared Settings / Help modal
+-------------------------------------------------- */
+
+.panel-modal-content {
+    width: 440px;
+    max-width: 90%;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    position: relative;
+
+    text-align: left;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+
+.modal-close-button {
+    position: absolute;
+
+    top: 12px;
+    right: 16px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #666;
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+
+.panel-title {
+    margin: 0 0 25px;
+
+    color: #272b38;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+
+/* --------------------------------------------------
+   Settings
+-------------------------------------------------- */
+
+.settings-group h3 {
+    margin: 0 0 6px;
+
+    color: #272b38;
+}
+
+
+.settings-group > p {
+    margin: 0 0 18px;
+
+    color: #777;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+}
+
+
+.settings-group .difficulty-options {
+    justify-content: flex-start;
+
+    margin: 0;
+}
+
+
+.settings-note {
+    margin-top: 18px !important;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #ececf0;
+
+    color: #888 !important;
+
+    font-size: 12px !important;
+}
+
+
+/* --------------------------------------------------
+   How to Play
+-------------------------------------------------- */
+
+.help-content {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.help-rule {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    color: #4f5360;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+}
+
+
+.help-rule strong {
+    width: 25px;
+    height: 25px;
+
+    flex: 0 0 25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #272b38;
+
+    color: white;
+
+    font-size: 12px;
+}
+
+
+.help-tip {
+    margin-top: 22px;
+
+    padding: 14px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    border-radius: 10px;
+
+    background: #f3f4f8;
+
+    color: #555d72;
+
+    font-size: 13px;
+}
+
+
+.help-tip strong {
+    color: #272b38;
+}
+
+
+/* --------------------------------------------------
+   Mobile
+-------------------------------------------------- */
+
+@media (max-width: 560px) {
+
+    body {
+        padding: 12px 0;
+    }
+
+
+    .game-card {
+        max-width: calc(100% - 16px);
+
+        padding: 22px 18px 26px;
+    }
+
+
+    .game-heading h1 {
+        font-size: 28px;
+    }
+
+
+    .game-subtitle-row h2 {
+        font-size: 17px;
+    }
+
+
+    .header-actions {
+        gap: 2px;
+    }
+
+
+    .header-icon-button {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    .header-icon-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+
+    .live-stats {
+        margin-top: 15px;
+    }
+
+
+    .live-stat {
+        padding: 7px 10px;
+    }
+
+
+    .summary-stats {
+        flex-wrap: wrap;
+    }
+
+
+    .summary-stat {
+        min-width: 40%;
+    }
+
+
+    .bottom-actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* --------------------------------------------------
+   Appearance settings
+-------------------------------------------------- */
+
+.settings-divider {
+    height: 1px;
+
+    margin: 24px 0;
+
+    background: #e8e9ed;
+}
+
+
+.appearance-options {
+    display: flex;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+}
+
+
+.appearance-button {
+    border: 1px solid #d9dbe3;
+
+    border-radius: 9px;
+
+    padding: 8px 14px;
+
+    background: #f2f3f6;
+
+    color: #555;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.appearance-button:hover:not(.active) {
+    background: #e6e8ee;
+
+    transform: translateY(-1px);
+}
+
+
+.appearance-button.active {
+    background: #272b38;
+
+    border-color: #272b38;
+
+    color: white;
+}
+
+
+/* Better How to Play text */
+
+.help-rule span {
+    display: block;
+}
+
+
+.help-rule span b {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #272b38;
+}
+
+
+/* --------------------------------------------------
+   Dark mode
+-------------------------------------------------- */
+
+html[data-theme="dark"] body {
+    background: #17191f;
+
+    color: #f1f2f5;
+}
+
+
+html[data-theme="dark"] .game-card {
+    background: #22252e;
+
+    color: #f1f2f5;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] .equation-section h3 {
+    color: #f5f6f8;
+}
+
+
+html[data-theme="dark"] h2,
+html[data-theme="dark"] .instruction,
+html[data-theme="dark"] .target-section span {
+    color: #adb1bd;
+}
+
+
+html[data-theme="dark"] .header-icon-button {
+    color: #b9bdc8;
+}
+
+
+html[data-theme="dark"] .header-icon-button:hover {
+    background: #30343e;
+
+    color: white;
+}
+
+
+html[data-theme="dark"] .difficulty-badge {
+    background: #333744;
+
+    color: #c9cddd;
+}
+
+
+html[data-theme="dark"] .difficulty-badge:hover {
+    background: #3c4150;
+
+    color: white;
+}
+
+
+/* Live stats */
+
+html[data-theme="dark"] .live-stat {
+    background: #2d3039;
+}
+
+
+html[data-theme="dark"] .live-stat-label {
+    color: #999eaa;
+}
+
+
+html[data-theme="dark"] .live-stat strong {
+    color: #f2f3f6;
+}
+
+
+/* Number and equation area */
+
+html[data-theme="dark"] .number-tile {
+    background: #383d4b;
+
+    color: white;
+}
+
+
+html[data-theme="dark"] .equation-box {
+    border-color: #555a66;
+}
+
+
+html[data-theme="dark"] .placeholder {
+    color: #777d89;
+}
+
+
+html[data-theme="dark"] .equation-number {
+    background: #363a45;
+
+    color: #f3f4f6;
+}
+
+
+html[data-theme="dark"] .equation-operator {
+    color: #f3f4f6;
+}
+
+
+html[data-theme="dark"] .operator-tile {
+    color: #f3f4f6;
+}
+
+
+html[data-theme="dark"] .operator-tile:hover {
+    background: #30343e;
+}
+
+
+html[data-theme="dark"] .equation-box.drag-over {
+    border-color: #969baa;
+
+    background: #292c35;
+}
+
+
+html[data-theme="dark"] .equation-box.delete-mode {
+    border-color: #c75b5b;
+
+    background: #382527;
+}
+
+
+/* Editing buttons */
+
+html[data-theme="dark"] .secondary-button,
+html[data-theme="dark"] .new-puzzle-button {
+    background: #343843;
+
+    color: #f0f1f4;
+}
+
+
+html[data-theme="dark"] .hint-button {
+    background: #343843;
+
+    color: #e2e4eb;
+}
+
+
+html[data-theme="dark"] .hint-button:hover:not(:disabled) {
+    background: #3d424f;
+}
+
+
+html[data-theme="dark"] .submit-button {
+    background: #eceef3;
+
+    color: #20232b;
+}
+
+
+/* Hint and solution */
+
+html[data-theme="dark"] .hint-reveal {
+    color: #c4c8d4;
+}
+
+
+html[data-theme="dark"] .hint-reveal.visible {
+    background: #2d3039;
+
+    border-color: #414652;
+}
+
+
+html[data-theme="dark"] .solution-reveal {
+    color: #c4c8d4;
+}
+
+
+html[data-theme="dark"] .solution-reveal.visible {
+    background: #2d3039;
+}
+
+
+/* Modals */
+
+html[data-theme="dark"] .modal {
+    background: rgba(0, 0, 0, 0.62);
+}
+
+
+html[data-theme="dark"] .panel-modal-content,
+html[data-theme="dark"] .stats-modal-content,
+html[data-theme="dark"] .give-up-modal-content {
+    background: #252832;
+
+    color: #f2f3f6;
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+
+html[data-theme="dark"] .modal-close-button,
+html[data-theme="dark"] .close-stats-button {
+    color: #aeb2bd;
+}
+
+
+html[data-theme="dark"] .panel-title,
+html[data-theme="dark"] .stats-title,
+html[data-theme="dark"] .settings-group h3,
+html[data-theme="dark"] .give-up-modal-content h2 {
+    color: #f4f5f7;
+}
+
+
+html[data-theme="dark"] .settings-group > p,
+html[data-theme="dark"] .give-up-modal-content p {
+    color: #a9aebb;
+}
+
+
+html[data-theme="dark"] .settings-divider {
+    background: #3a3e49;
+}
+
+
+html[data-theme="dark"] .settings-note {
+    border-color: #3a3e49;
+
+    color: #969ca9 !important;
+}
+
+
+/* Settings choices */
+
+html[data-theme="dark"] .difficulty-button,
+html[data-theme="dark"] .appearance-button {
+    background: #323640;
+
+    border-color: #454a57;
+
+    color: #c5c9d3;
+}
+
+
+html[data-theme="dark"] .difficulty-button:hover:not(.active),
+html[data-theme="dark"] .appearance-button:hover:not(.active) {
+    background: #3c414d;
+}
+
+
+html[data-theme="dark"] .difficulty-button.active,
+html[data-theme="dark"] .appearance-button.active {
+    background: #eceef3;
+
+    border-color: #eceef3;
+
+    color: #22252e;
+}
+
+
+/* How to Play */
+
+html[data-theme="dark"] .help-rule {
+    color: #c4c8d3;
+}
+
+
+html[data-theme="dark"] .help-rule span b {
+    color: #f4f5f7;
+}
+
+
+html[data-theme="dark"] .help-rule strong {
+    background: #eceef3;
+
+    color: #22252e;
+}
+
+
+html[data-theme="dark"] .help-tip {
+    background: #30343e;
+
+    color: #b9beca;
+}
+
+
+html[data-theme="dark"] .help-tip strong {
+    color: #f3f4f6;
+}
+
+
+/* Statistics */
+
+html[data-theme="dark"] .summary-value {
+    color: #f3f4f6;
+}
+
+
+html[data-theme="dark"] .summary-label {
+    color: #9ca1ad;
+}
+
+
+html[data-theme="dark"] .distribution-bar {
+    background: #656b78;
+}
+
+
+/* Finished puzzle states */
+
+html[data-theme="dark"]
+.game-card.solved
+.equation-box.locked {
+    background: #203428;
+}
+
+
+html[data-theme="dark"]
+.game-card.lost
+.equation-box.locked {
+    background: #3a2528;
+}
+
+
+html[data-theme="dark"]
+.game-card.given-up
+.equation-box.locked {
+    background: #382f21;
+}
+
+/* --------------------------------------------------
+   Dark mode polish
+-------------------------------------------------- */
+
+html[data-theme="dark"] .number-tile {
+    background: #414756;
+    color: #ffffff;
+}
+
+
+html[data-theme="dark"] .equation-box {
+    border-color: #646a78;
+}
+
+
+html[data-theme="dark"] .placeholder {
+    color: #9ca2b0;
+}
+
+
+html[data-theme="dark"] .submit-button {
+    background: #3a4050;
+    color: #ffffff;
+
+    border: 1px solid #4a5162;
+}
+
+
+html[data-theme="dark"] .submit-button:hover:not(:disabled) {
+    background: #444b5c;
+}
+
+
+/* Keep finished-state colors strong */
+
+html[data-theme="dark"]
+.game-card.solved
+.submit-button {
+    background: #239653;
+    color: white;
+    border-color: #239653;
+}
+
+
+html[data-theme="dark"]
+.game-card.lost
+.submit-button {
+    background: #c54a4a;
+    color: white;
+    border-color: #c54a4a;
+}
+
+
+html[data-theme="dark"]
+.game-card.given-up
+.submit-button {
+    background: #b78335;
+    color: white;
+    border-color: #b78335;
+}
+
+/* --------------------------------------------------
+   Random / Daily mode switch
+-------------------------------------------------- */
+
+.mode-switch {
+    width: fit-content;
+
+    margin: 15px auto 2px;
+
+    padding: 3px;
+
+    display: flex;
+
+    gap: 3px;
+
+    border-radius: 11px;
+
+    background: #eceef3;
+}
+
+
+.mode-button {
+    min-width: 82px;
+
+    padding: 7px 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #737783;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.mode-button:hover:not(.active):not(:disabled) {
+    color: #272b38;
+}
+
+
+.mode-button.active {
+    background: white;
+
+    color: #272b38;
+
+    box-shadow:
+        0 1px 5px rgba(0, 0, 0, 0.08);
+}
+
+
+.mode-button:disabled {
+    cursor: default;
+}
+
+
+/* --------------------------------------------------
+   Statistics mode selector
+-------------------------------------------------- */
+
+.stats-mode-switch {
+    width: fit-content;
+
+    margin: 0 auto 22px;
+
+    padding: 3px;
+
+    display: flex;
+
+    gap: 3px;
+
+    border-radius: 10px;
+
+    background: #eceef3;
+}
+
+
+.stats-mode-button {
+    min-width: 82px;
+
+    padding: 7px 13px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #777;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.stats-mode-button.active {
+    background: white;
+
+    color: #272b38;
+
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+
+/* --------------------------------------------------
+   Hint statistics
+-------------------------------------------------- */
+
+.hint-summary-stats {
+    display: flex;
+
+    gap: 10px;
+
+    margin: 0 0 26px;
+}
+
+
+.hint-summary-stat {
+    flex: 1;
+
+    padding: 13px 10px;
+
+    display: flex;
+    flex-direction: column;
+
+    text-align: center;
+
+    border-radius: 11px;
+
+    background: #f3f4f7;
+}
+
+
+/* Difficulty is unavailable during Daily */
+
+.difficulty-button:disabled {
+    opacity: 0.42;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+/* --------------------------------------------------
+   Dark mode - game modes
+-------------------------------------------------- */
+
+html[data-theme="dark"] .mode-switch,
+html[data-theme="dark"] .stats-mode-switch {
+    background: #30343e;
+}
+
+
+html[data-theme="dark"] .mode-button,
+html[data-theme="dark"] .stats-mode-button {
+    color: #a7acb8;
+}
+
+
+html[data-theme="dark"] .mode-button.active,
+html[data-theme="dark"] .stats-mode-button.active {
+    background: #454b59;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 1px 5px rgba(0, 0, 0, 0.25);
+}
+
+
+html[data-theme="dark"] .hint-summary-stat {
+    background: #30343e;
+}
+
+.mode-button,
+.stats-mode-button {
+    min-width: 96px;
+}
+
+/* ==================================================
+   Daily Start Screen
+================================================== */
+
+.daily-start-panel {
+    margin: 24px 0 8px;
+    padding: 28px 22px;
+    text-align: center;
+    border-radius: 16px;
+    background: #f4f5f8;
+}
+
+.daily-start-kicker {
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    color: #858a96;
+}
+
+.daily-start-panel h3 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+.daily-start-panel p {
+    margin: 0;
+    color: #6f7480;
+}
+
+.daily-start-meta {
+    margin: 16px 0 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #777c88;
+}
+
+.start-daily-button {
+    width: 100%;
+    max-width: 250px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #272b38;
+    color: white;
+}
+
+.start-daily-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ==================================================
+   Timer / Statistics
+================================================== */
+
+.live-stats {
+    gap: 10px;
+}
+
+.live-stat {
+    flex: 1;
+}
+
+#time-count {
+    font-variant-numeric: tabular-nums;
+}
+
+.hint-distribution-title {
+    margin-top: 28px;
+}
+
+
+/* ==================================================
+   Dark Mode
+================================================== */
+
+html[data-theme="dark"] .daily-start-panel {
+    background: #30343e;
+}
+
+html[data-theme="dark"] .daily-start-kicker,
+html[data-theme="dark"] .daily-start-panel p,
+html[data-theme="dark"] .daily-start-meta {
+    color: #a8adba;
+}
+
+html[data-theme="dark"] .start-daily-button {
+    background: #505767;
+    color: white;
+}
+
+html[data-theme="dark"] .start-daily-button:hover {
+    background: #5a6273;
+}
+
+/* ==================================================
+   Hide Daily puzzle before Start
+================================================== */
+
+.daily-gameplay-hidden {
+    display: none !important;
+}
+
+
+/* ==================================================
+   Statistics distributions side by side
+================================================== */
+
+.stats-distributions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+    margin-top: 28px;
+}
+
+.stats-distribution-group {
+    min-width: 0;
+}
+
+.stats-distribution-group .distribution-title {
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.stats-distribution-group .distribution {
+    margin-top: 0;
+}
+
+
+/* Slightly tighter on smaller screens */
+@media (max-width: 520px) {
+
+    .stats-distributions-grid {
+        gap: 18px;
+    }
+
+    .stats-distribution-group .distribution-title {
+        font-size: 17px;
+    }
+}
+
+/* ==================================================
+   Timer controls
+================================================== */
+
+.timer-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 8px 0 14px;
+}
+
+.timer-controls[hidden] {
+    display: none !important;
+}
+
+.timer-control-button {
+    padding: 6px 10px;
+    border: 1px solid #d9dce3;
+    border-radius: 8px;
+    background: #f4f5f8;
+    color: #626875;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.timer-control-button:hover {
+    background: #eceef3;
+    color: #272b38;
+}
+
+.timer-pause-button {
+    min-width: 70px;
+}
+
+
+/* ==================================================
+   Manual pause
+================================================== */
+
+.manual-pause-hidden {
+    display: none !important;
+}
+
+.puzzle-pause-panel {
+    margin: 24px 0 8px;
+    padding: 30px 22px;
+    text-align: center;
+    border-radius: 16px;
+    background: #f4f5f8;
+}
+
+.puzzle-pause-panel[hidden] {
+    display: none !important;
+}
+
+.pause-panel-kicker {
+    margin-bottom: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #858a96;
+}
+
+.puzzle-pause-panel h3 {
+    margin: 0 0 8px;
+    font-size: 23px;
+}
+
+.puzzle-pause-panel p {
+    margin: 0;
+    color: #6f7480;
+}
+
+
+/* ==================================================
+   New Daily available
+================================================== */
+
+.new-daily-available-panel {
+    margin-top: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-radius: 12px;
+    background: #f3f4f7;
+}
+
+.new-daily-available-panel[hidden] {
+    display: none !important;
+}
+
+.new-daily-available-panel strong {
+    font-size: 13px;
+}
+
+.play-new-daily-button {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #272b38;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* ==================================================
+   Dark mode
+================================================== */
+
+html[data-theme="dark"] .timer-control-button {
+    border-color: #4a5162;
+    background: #30343e;
+    color: #c2c6d0;
+}
+
+html[data-theme="dark"] .timer-control-button:hover {
+    background: #3a4050;
+    color: white;
+}
+
+html[data-theme="dark"] .puzzle-pause-panel,
+html[data-theme="dark"] .new-daily-available-panel {
+    background: #30343e;
+}
+
+html[data-theme="dark"] .pause-panel-kicker,
+html[data-theme="dark"] .puzzle-pause-panel p {
+    color: #a8adba;
+}
+
+html[data-theme="dark"] .play-new-daily-button {
+    background: #505767;
+    color: white;
+}
+
+html[data-theme="dark"] .play-new-daily-button:hover {
+    background: #5a6273;
+}
+
+
+/* ==================================================
+   Small screens
+================================================== */
+
+@media (max-width: 520px) {
+    .timer-controls {
+        justify-content: center;
+    }
+
+    .new-daily-available-panel {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ==================================================
+   PuzzleLab typography — Manrope
+================================================== */
+
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Manrope", Arial, sans-serif;
+}
+
+
+/* ==================================================
+   Pause screen
+================================================== */
+
+.puzzle-pause-panel {
+    padding: 34px 22px;
+}
+
+.puzzle-pause-panel h3 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.resume-puzzle-button {
+    width: 100%;
+    max-width: 220px;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 10px;
+    background: #272b38;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.resume-puzzle-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ==================================================
+   Unlimited Statistics — Challenge / Difficulty
+================================================== */
+
+.stats-breakdown-controls {
+    margin: 2px 0 24px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f3f4f7;
+}
+
+.stats-breakdown-controls[hidden] {
+    display: none !important;
+}
+
+.stats-breakdown-heading {
+    margin-bottom: 10px;
+    text-align: center;
+    color: #6f7480;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.stats-grouping-switch {
+    width: fit-content;
+    margin: 0 auto 12px;
+    padding: 3px;
+    display: flex;
+    gap: 3px;
+    border-radius: 10px;
+    background: #e4e6eb;
+}
+
+.stats-grouping-button {
+    min-width: 105px;
+    padding: 7px 13px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #777c88;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.stats-grouping-button.active {
+    background: white;
+    color: #272b38;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+}
+
+.stats-filter-options {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.stats-filter-button {
+    padding: 6px 10px;
+    border: 1px solid #d8dbe2;
+    border-radius: 999px;
+    background: transparent;
+    color: #747985;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.stats-filter-button:hover:not(.active) {
+    color: #272b38;
+    border-color: #bfc3cc;
+}
+
+.stats-filter-button.active {
+    border-color: #596173;
+    background: #596173;
+    color: white;
+}
+
+.stats-grouping-explanation {
+    margin: 11px auto 0;
+    max-width: 410px;
+    text-align: center;
+    color: #858a96;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+
+/* ==================================================
+   Dark mode additions
+================================================== */
+
+html[data-theme="dark"] .resume-puzzle-button {
+    background: #505767;
+    color: white;
+}
+
+html[data-theme="dark"] .resume-puzzle-button:hover {
+    background: #5a6273;
+}
+
+html[data-theme="dark"] .stats-breakdown-controls {
+    background: #30343e;
+}
+
+html[data-theme="dark"] .stats-breakdown-heading,
+html[data-theme="dark"] .stats-grouping-explanation {
+    color: #a8adba;
+}
+
+html[data-theme="dark"] .stats-grouping-switch {
+    background: #252932;
+}
+
+html[data-theme="dark"] .stats-grouping-button {
+    color: #aeb3bf;
+}
+
+html[data-theme="dark"] .stats-grouping-button.active {
+    background: #505767;
+    color: white;
+}
+
+html[data-theme="dark"] .stats-filter-button {
+    border-color: #4b5261;
+    color: #aeb3bf;
+}
+
+html[data-theme="dark"] .stats-filter-button:hover:not(.active) {
+    border-color: #666e80;
+    color: white;
+}
+
+html[data-theme="dark"] .stats-filter-button.active {
+    border-color: #596173;
+    background: #596173;
+    color: white;
+}
+
+
+/* ==================================================
+   Small screens
+================================================== */
+
+@media (max-width: 520px) {
+    .stats-grouping-switch {
+        width: 100%;
+    }
+
+    .stats-grouping-button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stats-filter-options {
+        gap: 6px;
+    }
+}
+
+/* ==================================================
+   Statistics modal — scrolling + cleaner layout
+================================================== */
+
+#stats-modal {
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+#stats-modal .stats-modal-content {
+    width: min(620px, 100%);
+    max-width: none;
+
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    box-sizing: border-box;
+
+    padding: 26px 30px 30px;
+
+    scrollbar-gutter: stable;
+}
+
+
+/* Give the title a little breathing room */
+#stats-modal .stats-title {
+    margin-bottom: 16px;
+}
+
+
+/* ==================================================
+   Compact Challenge / Difficulty controls
+================================================== */
+
+#stats-modal .stats-breakdown-controls {
+    display: grid;
+
+    grid-template-columns: auto 1fr;
+
+    align-items: center;
+
+    column-gap: 14px;
+    row-gap: 10px;
+
+    margin: 4px 0 20px;
+
+    padding: 0 0 18px;
+
+    background: transparent;
+
+    border-bottom: 1px solid #e3e5ea;
+}
+
+
+#stats-modal .stats-breakdown-heading {
+    grid-column: 1 / -1;
+
+    margin: 0;
+
+    text-align: left;
+
+    font-size: 12px;
+}
+
+
+#stats-modal .stats-grouping-switch {
+    margin: 0;
+}
+
+
+#stats-modal .stats-filter-options {
+    justify-content: flex-start;
+
+    flex-wrap: wrap;
+}
+
+
+#stats-modal .stats-grouping-explanation {
+    grid-column: 1 / -1;
+
+    max-width: none;
+
+    margin: 0;
+
+    text-align: left;
+
+    line-height: 1.4;
+}
+
+
+/* ==================================================
+   Main stats spacing
+================================================== */
+
+#stats-modal .summary-stats {
+    margin-top: 18px;
+    margin-bottom: 20px;
+}
+
+
+#stats-modal .hint-summary-stats {
+    margin-bottom: 22px;
+}
+
+
+#stats-modal .stats-distributions-grid {
+    gap: 24px;
+
+    margin-top: 22px;
+}
+
+
+/* ==================================================
+   Dark mode
+================================================== */
+
+html[data-theme="dark"]
+#stats-modal .stats-breakdown-controls {
+    border-bottom-color: #3d424e;
+}
+
+
+/* ==================================================
+   Smaller screens
+================================================== */
+
+@media (max-width: 600px) {
+
+    #stats-modal {
+        padding: 10px;
+    }
+
+    #stats-modal .stats-modal-content {
+        max-height: calc(100dvh - 20px);
+
+        padding: 24px 20px 26px;
+    }
+
+    #stats-modal .stats-breakdown-controls {
+        grid-template-columns: 1fr;
+    }
+
+    #stats-modal .stats-grouping-switch {
+        margin: 0 auto;
+    }
+
+    #stats-modal .stats-filter-options {
+        justify-content: center;
+    }
+
+    #stats-modal .stats-breakdown-heading,
+    #stats-modal .stats-grouping-explanation {
+        text-align: center;
+    }
+}
+
+/* Pause screen warmth + timer control spacing */
+
+.puzzle-pause-panel .pause-message {
+    margin: -8px 0 20px;
+    color: #6f7480;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+html[data-theme="dark"] .puzzle-pause-panel .pause-message {
+    color: #a8adba;
+}
+
+/* ==================================================
+   Daily countdown
+================================================== */
+
+.daily-countdown {
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #858a96;
+    font-variant-numeric: tabular-nums;
+}
+
+.daily-finished-countdown {
+    margin: 16px 0 4px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #727784;
+    font-variant-numeric: tabular-nums;
+}
+
+.daily-finished-countdown[hidden] {
+    display: none !important;
+}
+
+html[data-theme="dark"] .daily-countdown,
+html[data-theme="dark"] .daily-finished-countdown {
+    color: #a8adba;
+}
+
+/* ==================================================
+   How to Play — wider, shorter layout
+================================================== */
+
+#help-modal .panel-modal-content {
+    width: min(760px, calc(100vw - 32px));
+    max-width: 760px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 28px 34px 32px;
+}
+
+#help-modal .help-content {
+    margin-bottom: 24px;
+}
+
+#help-modal .help-tips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+#help-modal .help-tips-grid .help-tip {
+    margin: 0;
+    min-width: 0;
+}
+
+
+/* ==================================================
+   Dedicated Daily Result screen
+================================================== */
+
+.daily-result-hidden {
+    display: none !important;
+}
+
+.daily-result-panel {
+    margin: 24px 0 8px;
+    padding: 30px 28px 28px;
+    text-align: center;
+    border-radius: 16px;
+    background: #f4f5f8;
+}
+
+.daily-result-panel[hidden] {
+    display: none !important;
+}
+
+.daily-result-kicker {
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    color: #7d828e;
+}
+
+.daily-result-status {
+    margin: 0 0 24px;
+    font-size: 30px;
+    line-height: 1.15;
+}
+
+.daily-result-panel.solved .daily-result-status {
+    color: #239653;
+}
+
+.daily-result-panel.lost .daily-result-status {
+    color: #c54a4a;
+}
+
+.daily-result-panel.given-up .daily-result-status {
+    color: #b78335;
+}
+
+.daily-result-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.daily-result-metric {
+    min-width: 0;
+    padding: 14px 8px;
+    border-radius: 11px;
+    background: white;
+}
+
+.daily-result-metric span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #8a8f9a;
+}
+
+.daily-result-metric strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.daily-result-countdown {
+    margin: 2px 0 22px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #666c78;
+    font-variant-numeric: tabular-nums;
+}
+
+.daily-result-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.daily-result-actions button,
+.back-to-daily-result-button {
+    min-height: 40px;
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.daily-result-secondary-button,
+.back-to-daily-result-button {
+    border: 1px solid #d8dbe2;
+    background: white;
+    color: #4e5461;
+}
+
+.daily-result-secondary-button:hover,
+.back-to-daily-result-button:hover {
+    background: #eceef3;
+    color: #272b38;
+}
+
+.daily-result-primary-button {
+    border: none;
+    background: #272b38;
+    color: white;
+}
+
+.daily-result-primary-button:hover {
+    transform: translateY(-1px);
+}
+
+.daily-result-primary-button[hidden] {
+    display: none !important;
+}
+
+.back-to-daily-result-button {
+    display: block;
+    width: fit-content;
+    margin: 16px auto 2px;
+}
+
+.back-to-daily-result-button[hidden] {
+    display: none !important;
+}
+
+
+/* The old completed-Daily extras have moved to the Result screen. */
+#daily-finished-countdown,
+#new-daily-available-panel {
+    display: none !important;
+}
+
+
+/* ==================================================
+   Dark mode
+================================================== */
+
+html[data-theme="dark"] .daily-result-panel {
+    background: #30343e;
+}
+
+html[data-theme="dark"] .daily-result-kicker,
+html[data-theme="dark"] .daily-result-countdown {
+    color: #a8adba;
+}
+
+html[data-theme="dark"] .daily-result-metric {
+    background: #3a3f4a;
+}
+
+html[data-theme="dark"] .daily-result-metric span {
+    color: #aeb3bf;
+}
+
+html[data-theme="dark"] .daily-result-secondary-button,
+html[data-theme="dark"] .back-to-daily-result-button {
+    border-color: #4a5162;
+    background: #3a4050;
+    color: #e8eaf0;
+}
+
+html[data-theme="dark"] .daily-result-secondary-button:hover,
+html[data-theme="dark"] .back-to-daily-result-button:hover {
+    background: #454c5d;
+    color: white;
+}
+
+html[data-theme="dark"] .daily-result-primary-button {
+    background: #505767;
+    color: white;
+}
+
+html[data-theme="dark"] .daily-result-primary-button:hover {
+    background: #5a6273;
+}
+
+
+/* ==================================================
+   Smaller screens
+================================================== */
+
+@media (max-width: 650px) {
+    #help-modal .panel-modal-content {
+        width: calc(100vw - 20px);
+        max-height: calc(100dvh - 20px);
+        padding: 24px 20px 26px;
+    }
+
+    #help-modal .help-tips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .daily-result-panel {
+        padding: 26px 18px 24px;
+    }
+
+    .daily-result-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ==================================================
+   Division operator glyph
+   Manrope's division glyph renders too small here,
+   so use a symbol-friendly font just for this tile.
+================================================== */
+
+.operator-tile[data-token="/"] {
+    font-family: Arial, "Segoe UI Symbol", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ==================================================
+   Accessibility / keyboard / touch
+================================================== */
+
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+button,
+[role="button"],
+.equation-tile {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+.equation-tile:focus-visible,
+.equation-box:focus-visible {
+    outline: 3px solid #315fbd;
+    outline-offset: 3px;
+}
+
+html[data-theme="dark"] button:focus-visible,
+html[data-theme="dark"] [role="button"]:focus-visible,
+html[data-theme="dark"] .equation-tile:focus-visible,
+html[data-theme="dark"] .equation-box:focus-visible {
+    outline-color: #8db4ff;
+}
+
+.equation-tile {
+    border: none;
+    font-family: inherit;
+    color: inherit;
+}
+
+.equation-tile.selected {
+    box-shadow: 0 0 0 3px rgba(49, 95, 189, 0.22);
+}
+
+html[data-theme="dark"] .equation-tile.selected {
+    box-shadow: 0 0 0 3px rgba(141, 180, 255, 0.34);
+}
+
+.equation-tile-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.equation-tile-controls[hidden] {
+    display: none !important;
+}
+
+.equation-edit-button {
+    min-height: 38px;
+    padding: 7px 11px;
+    border: 1px solid #d8dbe2;
+    border-radius: 8px;
+    background: #f4f5f8;
+    color: #555d72;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.equation-edit-button:hover:not(:disabled) {
+    background: #e9ebf0;
+    color: #272b38;
+}
+
+.equation-edit-button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.equation-remove-button {
+    color: #9d3535;
+}
+
+html[data-theme="dark"] .equation-edit-button {
+    border-color: #4a5162;
+    background: #30343e;
+    color: #d2d5dd;
+}
+
+html[data-theme="dark"] .equation-edit-button:hover:not(:disabled) {
+    background: #3a4050;
+    color: white;
+}
+
+html[data-theme="dark"] .equation-remove-button {
+    color: #ef9a9a;
+}
+
+/* Prevent keyboard focus from being hidden behind modal edges. */
+.modal.open {
+    overflow: auto;
+}
+
+/* Keep controls comfortably tappable on phones. */
+@media (max-width: 560px) {
+    .header-icon-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .equation-edit-button {
+        min-height: 42px;
+        padding: 8px 12px;
+    }
+}
+
+/* Respect players who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .tile:hover,
+    .header-icon-button:hover,
+    .hint-button:hover:not(:disabled),
+    .keep-trying-button:hover,
+    .confirm-give-up-button:hover,
+    .start-daily-button:hover,
+    .resume-puzzle-button:hover,
+    .daily-result-primary-button:hover {
+        transform: none !important;
+    }
+}

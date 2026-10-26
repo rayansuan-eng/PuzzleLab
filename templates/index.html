@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PuzzleLab - Target Number</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', path='/style.css') }}">
+</head>
+
+<body>
+
+<div class="game-card"
+     role="main"
+     aria-labelledby="puzzlelab-title">
+
+
+    <!-- ==================================================
+         Header
+    ================================================== -->
+
+    <div class="game-header">
+
+        <div class="game-heading">
+
+            <h1 id="puzzlelab-title">PuzzleLab</h1>
+
+            <div class="game-subtitle-row">
+
+                <h2>Target Number</h2>
+
+                <button id="difficulty-badge"
+                        class="difficulty-badge"
+                        type="button"
+                        title="Change difficulty"
+                        aria-controls="settings-modal"
+                        aria-expanded="false">
+                    Mixed
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <!-- How to Play -->
+
+            <button id="help-button"
+                    class="header-icon-button"
+                    type="button"
+                    aria-label="How to play"
+                    aria-controls="help-modal"
+                    aria-expanded="false"
+                    title="How to Play">
+
+                <span class="help-icon"
+                      aria-hidden="true">
+                    ?
+                </span>
+
+            </button>
+
+
+            <!-- Statistics -->
+
+            <button id="stats-button"
+                    class="header-icon-button"
+                    type="button"
+                    aria-label="Statistics"
+                    aria-controls="stats-modal"
+                    aria-expanded="false"
+                    title="Statistics">
+
+                <svg viewBox="0 0 24 24"
+                     aria-hidden="true">
+
+                    <rect x="4"
+                          y="13"
+                          width="3"
+                          height="7">
+                    </rect>
+
+                    <rect x="10.5"
+                          y="8"
+                          width="3"
+                          height="12">
+                    </rect>
+
+                    <rect x="17"
+                          y="4"
+                          width="3"
+                          height="16">
+                    </rect>
+
+                </svg>
+
+            </button>
+
+
+            <!-- Settings -->
+
+            <button id="settings-button"
+                    class="header-icon-button"
+                    type="button"
+                    aria-label="Settings"
+                    aria-controls="settings-modal"
+                    aria-expanded="false"
+                    title="Settings">
+
+                <svg viewBox="0 0 24 24"
+                     aria-hidden="true">
+
+                    <path d="
+                        M12.22 2h-.44
+                        a2 2 0 0 0-2 2v.18
+                        a2 2 0 0 1-1 1.73l-.43.25
+                        a2 2 0 0 1-2 0l-.15-.08
+                        a2 2 0 0 0-2.73.73l-.22.38
+                        a2 2 0 0 0 .73 2.73l.15.09
+                        a2 2 0 0 1 1 1.74v.5
+                        a2 2 0 0 1-1 1.74l-.15.09
+                        a2 2 0 0 0-.73 2.73l.22.38
+                        a2 2 0 0 0 2.73.73l.15-.08
+                        a2 2 0 0 1 2 0l.43.25
+                        a2 2 0 0 1 1 1.73V20
+                        a2 2 0 0 0 2 2h.44
+                        a2 2 0 0 0 2-2v-.18
+                        a2 2 0 0 1 1-1.73l.43-.25
+                        a2 2 0 0 1 2 0l.15.08
+                        a2 2 0 0 0 2.73-.73l.22-.38
+                        a2 2 0 0 0-.73-2.73l-.15-.09
+                        a2 2 0 0 1-1-1.74v-.5
+                        a2 2 0 0 1 1-1.74l.15-.09
+                        a2 2 0 0 0 .73-2.73l-.22-.38
+                        a2 2 0 0 0-2.73-.73l-.15.08
+                        a2 2 0 0 1-2 0l-.43-.25
+                        a2 2 0 0 1-1-1.73V4
+                        a2 2 0 0 0-2-2z">
+                    </path>
+
+                    <circle cx="12"
+                            cy="12"
+                            r="3">
+                    </circle>
+
+                </svg>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         Live Game Stats
+    ================================================== -->
+
+    <div class="live-stats">
+
+        <div class="live-stat">
+
+            <span class="live-stat-label">
+                Attempts
+            </span>
+
+            <strong id="attempts-count">
+                0 / 6
+            </strong>
+
+        </div>
+
+
+        <div class="live-stat">
+
+            <span class="live-stat-label">
+                Streak
+            </span>
+
+            <strong id="streak-count">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         Game Mode
+    ================================================== -->
+
+    <div class="mode-switch"
+         role="group"
+         aria-label="Game mode">
+
+        <button class="mode-button active"
+                data-mode="random"
+                type="button">
+            Unlimited
+        </button>
+
+        <button class="mode-button"
+                data-mode="daily"
+                type="button">
+            Daily
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         Target
+    ================================================== -->
+
+    <div class="target-section">
+
+        <span>Target</span>
+
+        <div id="target"
+             class="target-number">
+            ?
+        </div>
+
+    </div>
+
+
+    <p class="instruction">
+        Use all four numbers exactly once.
+    </p>
+
+
+    <!-- ==================================================
+         Number Tiles
+    ================================================== -->
+
+    <div id="numbers"
+         class="numbers-container"
+         role="group"
+         aria-label="Available numbers">
+    </div>
+
+
+    <!-- ==================================================
+         Equation
+    ================================================== -->
+
+    <div class="equation-section">
+
+        <h3>Your Equation</h3>
+
+        <div id="equation"
+             class="equation-box"
+             aria-label="Current equation"
+             aria-describedby="equation-keyboard-help"
+             tabindex="-1">
+
+            <span class="placeholder">
+                Click, tap, drag, or type
+            </span>
+
+        </div>
+
+        <div id="equation-tile-controls"
+             class="equation-tile-controls"
+             role="group"
+             aria-label="Selected equation tile controls"
+             hidden>
+
+            <button id="move-equation-left"
+                    class="equation-edit-button"
+                    type="button"
+                    aria-label="Move selected tile left">
+                ← Move
+            </button>
+
+            <button id="move-equation-right"
+                    class="equation-edit-button"
+                    type="button"
+                    aria-label="Move selected tile right">
+                Move →
+            </button>
+
+            <button id="remove-equation-tile"
+                    class="equation-edit-button equation-remove-button"
+                    type="button"
+                    aria-label="Remove selected tile from equation">
+                Remove
+            </button>
+
+        </div>
+
+        <p id="equation-keyboard-help"
+           class="sr-only">
+            You can build the equation by clicking or dragging tiles, or by typing the puzzle numbers and the plus, minus, multiplication, division, and parenthesis keys. Select an equation tile to move or remove it without dragging. Keyboard users can use the left and right arrow keys to move through the equation, Ctrl plus left or right arrow to reorder a selected tile, and Delete or Backspace to remove it.
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         Operators
+    ================================================== -->
+
+    <div class="operators-container"
+         role="group"
+         aria-label="Operations">
+
+        <button class="tile operator-tile"
+                data-token="+"
+                type="button">
+            +
+        </button>
+
+        <button class="tile operator-tile"
+                data-token="-"
+                type="button">
+            −
+        </button>
+
+        <button class="tile operator-tile"
+                data-token="*"
+                type="button">
+            ×
+        </button>
+
+        <button class="tile operator-tile"
+                data-token="/"
+                type="button">
+            ÷
+        </button>
+
+        <button class="tile operator-tile"
+                data-token="("
+                type="button">
+            (
+        </button>
+
+        <button class="tile operator-tile"
+                data-token=")"
+                type="button">
+            )
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         Edit Buttons
+    ================================================== -->
+
+    <div class="edit-buttons">
+
+        <button id="backspace-button"
+                class="secondary-button"
+                type="button">
+            Backspace
+        </button>
+
+        <button id="clear-button"
+                class="secondary-button"
+                type="button">
+            Clear
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         Submit
+    ================================================== -->
+
+    <button id="submit-button"
+            class="submit-button"
+            type="button">
+        Submit Answer
+    </button>
+
+
+    <!-- ==================================================
+         Feedback / Hint / Solution
+    ================================================== -->
+
+    <div id="feedback"
+         class="feedback"
+         role="status"
+         aria-live="polite"
+         aria-atomic="true">
+    </div>
+
+
+    <div id="hint-reveal"
+         class="hint-reveal"
+         role="status"
+         aria-live="polite"
+         aria-atomic="true">
+    </div>
+
+
+    <div id="solution-reveal"
+         class="solution-reveal"
+         role="status"
+         aria-live="polite"
+         aria-atomic="true">
+    </div>
+
+
+    <!-- ==================================================
+         Bottom Actions
+    ================================================== -->
+
+    <div class="bottom-actions">
+
+        <button id="new-puzzle-button"
+                class="new-puzzle-button"
+                type="button">
+            New Puzzle
+        </button>
+
+        <button id="hint-button"
+                class="hint-button"
+                type="button">
+            Hint
+        </button>
+
+        <button id="give-up-button"
+                class="give-up-button"
+                type="button"
+                aria-controls="give-up-modal"
+                aria-expanded="false">
+            Give Up
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     Statistics Modal
+================================================== -->
+
+<div id="stats-modal"
+     class="modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="stats-title"
+     aria-hidden="true">
+
+    <div class="stats-modal-content">
+
+        <button id="close-stats-button"
+                class="close-stats-button"
+                type="button"
+                aria-label="Close statistics">
+            ×
+        </button>
+
+
+        <h2 id="stats-title"
+            class="stats-title">
+            Statistics
+        </h2>
+
+
+        <div class="stats-mode-switch"
+             role="group"
+             aria-label="Statistics game mode">
+
+            <button class="stats-mode-button active"
+                    data-stats-mode="random"
+                    type="button">
+                Unlimited
+            </button>
+
+            <button class="stats-mode-button"
+                    data-stats-mode="daily"
+                    type="button">
+                Daily
+            </button>
+
+        </div>
+
+
+        <div class="summary-stats">
+
+            <div class="summary-stat">
+
+                <span id="played-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Played
+                </span>
+
+            </div>
+
+
+            <div class="summary-stat">
+
+                <span id="win-percent-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Win %
+                </span>
+
+            </div>
+
+
+            <div class="summary-stat">
+
+                <span id="modal-streak-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Streak
+                </span>
+
+            </div>
+
+
+            <div class="summary-stat">
+
+                <span id="modal-max-streak-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Max Streak
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="hint-summary-stats">
+
+            <div class="hint-summary-stat">
+
+                <span id="hints-used-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Hints Used
+                </span>
+
+            </div>
+
+
+            <div class="hint-summary-stat">
+
+                <span id="puzzles-using-hints-stat"
+                      class="summary-value">
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Puzzles with Hints
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <h3 class="distribution-title">
+            Solve Distribution
+        </h3>
+
+
+        <div id="distribution"
+             class="distribution">
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    1
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-1"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    2
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-2"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    3
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-3"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    4
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-4"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    5
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-5"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-row">
+
+                <span class="attempt-number">
+                    6
+                </span>
+
+                <div class="distribution-track">
+
+                    <div id="distribution-6"
+                         class="distribution-bar">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     How to Play Modal
+================================================== -->
+
+<div id="help-modal"
+     class="modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="help-title"
+     aria-hidden="true">
+
+    <div class="panel-modal-content">
+
+        <button id="close-help-button"
+                class="modal-close-button"
+                type="button"
+                aria-label="Close how to play">
+            ×
+        </button>
+
+
+        <h2 id="help-title"
+            class="panel-title">
+            How to Play
+        </h2>
+
+
+        <div class="help-content">
+
+            <div class="help-rule">
+
+                <strong>1</strong>
+
+                <span>
+                    <b>Reach the target number.</b>
+                    Build an equation whose result equals the target.
+                </span>
+
+            </div>
+
+
+            <div class="help-rule">
+
+                <strong>2</strong>
+
+                <span>
+                    <b>Use all four numbers exactly once.</b>
+                    Every number tile must appear in your equation.
+                </span>
+
+            </div>
+
+
+            <div class="help-rule">
+
+                <strong>3</strong>
+
+                <span>
+                    <b>Combine the numbers.</b>
+                    Use +, −, ×, ÷ and parentheses.
+                </span>
+
+            </div>
+
+
+            <div class="help-rule">
+
+                <strong>4</strong>
+
+                <span>
+                    <b>You have 6 valid attempts.</b>
+                    Invalid or incomplete equations do not use an attempt.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="help-tip">
+
+            <strong>
+                Need some help?
+            </strong>
+
+            <span>
+                Hints start subtle and become more specific each time.
+            </span>
+
+        </div>
+
+
+        <div class="help-tip">
+
+            <strong>
+                Choose your challenge
+            </strong>
+
+            <span>
+                Change between Easy, Medium, Hard and Mixed
+                anytime from Settings.
+            </span>
+
+        </div>
+
+
+        <div class="help-tip">
+
+            <strong>
+                Daily Puzzle
+            </strong>
+
+            <span>
+                Everyone gets the same Daily Puzzle each day.
+                Your progress is saved if you leave and come back.
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     Settings Modal
+================================================== -->
+
+<div id="settings-modal"
+     class="modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="settings-title"
+     aria-hidden="true">
+
+    <div class="panel-modal-content">
+
+        <button id="close-settings-button"
+                class="modal-close-button"
+                type="button"
+                aria-label="Close settings">
+            ×
+        </button>
+
+
+        <h2 id="settings-title"
+            class="panel-title">
+            Settings
+        </h2>
+
+
+        <div class="settings-group">
+
+            <h3 id="challenge-heading">
+                Difficulty
+            </h3>
+
+            <p>
+                Choose how challenging generated puzzles should be.
+            </p>
+
+
+            <div class="difficulty-options"
+                 role="group"
+                 aria-labelledby="challenge-heading">
+
+                <button class="difficulty-button"
+                        data-difficulty="easy"
+                        type="button">
+                    Easy
+                </button>
+
+                <button class="difficulty-button"
+                        data-difficulty="medium"
+                        type="button">
+                    Medium
+                </button>
+
+                <button class="difficulty-button"
+                        data-difficulty="hard"
+                        type="button">
+                    Hard
+                </button>
+
+                <button class="difficulty-button"
+                        data-difficulty="mixed"
+                        type="button">
+                    Mixed
+                </button>
+
+            </div>
+
+
+            <p class="settings-note">
+                Difficulty applies to Unlimited puzzles.
+                Changing it starts a new Unlimited puzzle.
+                Daily Puzzle uses one shared mixed-style puzzle each day.
+            </p>
+
+        </div>
+
+
+        <div class="settings-divider">
+        </div>
+
+
+        <div class="settings-group">
+
+            <h3 id="appearance-heading">
+                Appearance
+            </h3>
+
+            <p>
+                Choose how PuzzleLab looks on your device.
+            </p>
+
+
+            <div class="appearance-options"
+                 role="group"
+                 aria-labelledby="appearance-heading">
+
+                <button class="appearance-button"
+                        data-appearance="light"
+                        type="button">
+                    Light
+                </button>
+
+                <button class="appearance-button"
+                        data-appearance="dark"
+                        type="button">
+                    Dark
+                </button>
+
+                <button class="appearance-button"
+                        data-appearance="system"
+                        type="button">
+                    System
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     Give Up Modal
+================================================== -->
+
+<div id="give-up-modal"
+     class="modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="give-up-title"
+     aria-hidden="true">
+
+    <div class="give-up-modal-content">
+
+        <div class="give-up-icon">
+            🧩
+        </div>
+
+
+        <h2 id="give-up-title">
+            Give up this puzzle?
+        </h2>
+
+
+        <p>
+            We’ll reveal a valid solution.
+            This will count as a loss and reset your streak.
+        </p>
+
+
+        <div class="give-up-modal-buttons">
+
+            <button id="keep-trying-button"
+                    class="keep-trying-button"
+                    type="button">
+                Keep Trying
+            </button>
+
+            <button id="confirm-give-up-button"
+                    class="confirm-give-up-button"
+                    type="button">
+                Reveal Solution
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="accessibility-announcer"
+     class="sr-only"
+     role="status"
+     aria-live="polite"
+     aria-atomic="true">
+</div>
+
+<script src="{{ url_for('static', path='/script.js') }}"></script>
+
+</body>
+
+</html>
