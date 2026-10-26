@@ -1,5 +1,7 @@
 # PuzzleLab
 
+🎮 **Play PuzzleLab:** https://puzzlelab.onrender.com/
+
 **PuzzleLab: Target Number** is a browser-based number puzzle game built with FastAPI, JavaScript, HTML, and CSS.
 
 Players receive four numbers and a target. The goal is to create an equation that reaches the target while using every number exactly once.
